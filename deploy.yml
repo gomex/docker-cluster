@@ -1,0 +1,36 @@
+# Basic task example
+- name: provision stack
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  # Launch the cloudformation-example.json template.  Register the output.
+
+  tasks:
+    - name: Create an empty bucket
+      s3:
+        bucket: cloudformation-docker
+        mode: create
+        permission: public-read
+
+    - name: Upload the cf to s3 bucket
+      s3:
+        bucket: cloudformation-docker
+        object: Docker.tmpl
+        src: Docker.tmpl
+        mode: put
+
+    - name: launch ansible cloudformation example
+      cloudformation:
+        stack_name: "cloudformation-docker"
+        state: "present"
+        region: "us-east-2"
+        disable_rollback: true
+        template_url: https://s3.amazonaws.com/cloudformation-crossover-gomex/Docker.tmpl
+        template_parameters:
+          EnableCloudStorEfs: "yes"
+          KeyName: "crossover"
+          ManagerInstanceType: "t2.medium"
+          InstanceType: "t2.medium"
+        tags:
+          Stack: "ansible-cloudformation"
