@@ -37,3 +37,9 @@ ssh -i <path-to-private-key> -NL localhost:2374:/var/run/docker.sock docker@<pub
 export DOCKER_HOST='localhost:2374'
 docker info
 ```
+
+## To deploy example app
+
+```
+docker deploy --compose-file docker-compose.yml example
+```
